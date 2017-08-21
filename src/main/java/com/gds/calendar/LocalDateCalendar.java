@@ -33,8 +33,8 @@ public class LocalDateCalendar {
     private List<LocalDateCalendarListener> listnerRegistery = new ArrayList<>();
 
     /**
-     *
-     * @param endDate
+     * Create a calendar using the default calendar period defined by LocalDateCalendar.DEF_CALENDAR_PERIOD.
+     * @param endDate the last date in the calendar.
      */
     public LocalDateCalendar(final LocalDate endDate) {
         this(endDate, DEF_CALENDAR_PERIOD);
