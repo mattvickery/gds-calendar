@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -25,15 +26,16 @@ import static org.springframework.util.Assert.state;
  */
 public class LocalDateCalendar {
 
-    public static final int DEF_CALENDAR_PERIOD = 365;
-    public static final String MANDATORY_ARGUMENT_DATE_IS_MISSING = "Mandatory argument 'date' is missing";
+    private static final int DEF_CALENDAR_PERIOD = 365;
+    private static final String MANDATORY_ARGUMENT_DATE_IS_MISSING = "Mandatory argument 'date' is missing";
     private final List<LocalDate> days = new LinkedList<>();
     private final LocalDate endDate;
     private final int calendarPeriod;
-    private List<LocalDateCalendarListener> listnerRegistery = new ArrayList<>();
+    private final List<LocalDateCalendarListener> listenerRegistry = new ArrayList<>();
 
     /**
      * Create a calendar using the default calendar period defined by LocalDateCalendar.DEF_CALENDAR_PERIOD.
+     *
      * @param endDate the last date in the calendar.
      */
     public LocalDateCalendar(final LocalDate endDate) {
@@ -41,34 +43,33 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @param endDate
      * @param calendarPeriod
      * @param listeners
      */
     public LocalDateCalendar(final LocalDate endDate,
                              final int calendarPeriod,
-                             final LocalDateCalendarListener ...listeners) {
+                             final LocalDateCalendarListener... listeners) {
 
         notNull(endDate, "Mandatory argument 'endDate' is missing");
         state(calendarPeriod > 0, "Argument 'calendarPeriod' must be > 0");
         this.endDate = endDate;
         this.calendarPeriod = calendarPeriod;
-        for(int index = 0; index < calendarPeriod; index++)
+        for (int index = 0; index < calendarPeriod; index++)
             days.add(index, endDate.minusDays(index));
-        listnerRegistery.forEach(listener -> listener.calendarEventTriggered(INITIALISED));
+        Arrays.asList(listeners).stream().forEach(listenerRegistry:: add);
+        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(INITIALISED));
 
     }
 
     /**
-     *
      * @param date
      * @return
      */
     public Optional<LocalDate> getDayBefore(final LocalDate date) {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
-        if (days.indexOf(date) > -1)
+        if (days.indexOf(date) > - 1)
             return Optional.of(days.get(days.indexOf(date) + 1));
         if ((date.isAfter(endDate)) || (date.isBefore(endDate.minusDays(calendarPeriod))))
             throw new IllegalStateException("Date is outside of calendar range.");
@@ -82,7 +83,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @param date
      * @return
      */
@@ -93,7 +93,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @return
      */
     public LocalDateCalendar removeWeekendDays() {
@@ -101,7 +100,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @return
      */
     public LocalDateCalendar removeWeekDays() {
@@ -110,7 +108,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @param date
      * @return
      */
@@ -118,12 +115,11 @@ public class LocalDateCalendar {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
         if (days.remove(date))
-            listnerRegistery.forEach(listener -> listener.calendarEventTriggered(DATE_REMOVED));
+            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_REMOVED));
         return this;
     }
 
     /**
-     *
      * @param dates
      * @return
      */
@@ -131,12 +127,11 @@ public class LocalDateCalendar {
 
         notNull(dates, "Mandatory argument 'dates' is missing.");
         if (days.removeAll(dates))
-            listnerRegistery.forEach(listener -> listener.calendarEventTriggered(DATES_REMOVED));
+            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATES_REMOVED));
         return this;
     }
 
     /**
-     *
      * @param dayOfWeek
      * @return
      */
@@ -147,12 +142,11 @@ public class LocalDateCalendar {
                 .filter(day -> day.getDayOfWeek().equals(dayOfWeek))
                 .collect(Collectors.toList());
         if (days.removeAll(matchingDayOfWeeks))
-            listnerRegistery.forEach(listener -> listener.calendarEventTriggered(WEEKDAY_REMOVED));
+            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(WEEKDAY_REMOVED));
         return this;
     }
 
     /**
-     *
      * @param calendar
      * @return
      */
@@ -160,12 +154,11 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         calendar.days.forEach(this :: remove);
-        listnerRegistery.forEach(listener -> listener.calendarEventTriggered(CALENDAR_REMOVED));
+        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(CALENDAR_REMOVED));
         return this;
     }
 
     /**
-     *
      * @param calendar
      * @return
      */
@@ -173,23 +166,22 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         calendar.days.forEach(this :: add);
-        listnerRegistery.forEach(listener -> listener.calendarEventTriggered(CALENDAR_ADDED));
+        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(CALENDAR_ADDED));
         return this;
     }
 
     /**
-     *
      * @param date
      * @return
      */
     public LocalDateCalendar add(final LocalDate date) {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
-        if (days.indexOf(date) > -1)
+        if (days.indexOf(date) > - 1)
             return this;
         if ((days.size() > 0) && (days.get(0).compareTo(date) < 0)) {
             days.add(0, date);
-            listnerRegistery.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
+            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
             return this;
         }
         int lastIndexExceedingDate = 0;
@@ -199,15 +191,14 @@ public class LocalDateCalendar {
                 lastIndexExceedingDate = index;
         }
         int offset = days.size() > 0 ? 1 : 0;
-        if (lastIndexExceedingDate > -1) {
+        if (lastIndexExceedingDate > - 1) {
             days.add(lastIndexExceedingDate + offset, date);
-            listnerRegistery.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
+            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
         }
         return this;
     }
 
     /**
-     *
      * @param dayOfWeek
      * @return
      */
@@ -220,7 +211,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @return
      */
     public LocalDate getEndDate() {
@@ -228,7 +218,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @return
      */
     public LocalDate getStartDate() {
@@ -236,22 +225,16 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @param date
      * @return
      */
     public final boolean isFirstDayInTheMonth(final LocalDate date) {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
-        if (! days.contains(date))
-            return false;
-        if (getDayBefore(date).get().getMonthValue() == date.getMonthValue())
-            return false;
-        return true;
+        return days.contains(date) && getDayBefore(date).get().getMonthValue() != date.getMonthValue();
     }
 
     /**
-     *
      * @param date
      * @param offset
      * @return
@@ -260,16 +243,12 @@ public class LocalDateCalendar {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
         state(offset >= 0, "Argument 'offset' must be >= 0");
-        if (! days.contains(date))
-            return false;
-        if (((days.indexOf(date) + (offset -1)) <= days.size())
-            && (isFirstDayInTheMonth(days.get((days.indexOf(date) + (offset - 1))))))
-            return true;
-        return false;
+        return days.contains(date)
+                && ((days.indexOf(date) + (offset - 1)) <= days.size())
+                && (isFirstDayInTheMonth(days.get((days.indexOf(date) + (offset - 1)))));
     }
 
     /**
-     *
      * @param date
      * @return
      */
@@ -280,7 +259,6 @@ public class LocalDateCalendar {
     }
 
     /**
-     *
      * @param date
      * @param monthSubtraction
      * @return
@@ -294,20 +272,19 @@ public class LocalDateCalendar {
                         (day.getYear() == date.minusMonths(monthSubtraction).getYear()))
                 .collect(Collectors.toList());
         if (daysInMonthBefore.isEmpty())
-            throw new IllegalStateException("Calendar spans insufficientt days for ["+
-                    date.minusMonths(monthSubtraction).format(DateTimeFormatter.ofPattern("yyyy-MM"))+"]");
+            throw new IllegalStateException("Calendar spans insufficient days for [" +
+                    date.minusMonths(monthSubtraction).format(DateTimeFormatter.ofPattern("yyyy-MM")) + "]");
         return daysInMonthBefore.get(0);
     }
 
     /**
-     *
      * @param listener
      * @return
      */
     public LocalDateCalendar register(final LocalDateCalendarListener listener) {
 
         notNull(listener, "Mandatory argument 'listener' is missing.");
-        listnerRegistery.add(listener);
+        listenerRegistry.add(listener);
         return this;
     }
 }

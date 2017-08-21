@@ -37,7 +37,7 @@
             <version>1.4</version>
         </dependency>
 
-        <!-- Test depdendencies. -->
+        <!-- Test dependencies. -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

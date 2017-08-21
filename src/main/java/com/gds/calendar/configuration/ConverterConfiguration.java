@@ -2,8 +2,6 @@ package com.gds.calendar.configuration;
 
 import com.gds.calendar.LocalDateCalendar;
 import org.apache.commons.csv.CSVFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +35,6 @@ import static org.springframework.util.Assert.notNull;
 }, ignoreResourceNotFound = true)
 public class ConverterConfiguration implements EnvironmentAware {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConverterConfiguration.class);
     public static final String CALENDAR_LOCATION = "calendarLocation";
 
     private Environment environment;

@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 
+import static com.gds.calendar.CalendarChangeEvent.DATE_ADDED;
+import static com.gds.calendar.CalendarChangeEvent.DATE_REMOVED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -32,7 +34,7 @@ public class CalendarListenerTest {
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         final boolean [] results = new boolean[]{false};
         calendar.register(event -> {
-            if (event.equals(CalendarChangeEvent.DATE_REMOVED))
+            if (event.equals(DATE_REMOVED))
                 results[0] = true;
         });
         calendar.remove(targetDate);
@@ -46,7 +48,7 @@ public class CalendarListenerTest {
         final boolean [] results = new boolean[]{false};
         calendar.remove(targetDate);
         calendar.register(event -> {
-            if (event.equals(CalendarChangeEvent.DATE_REMOVED))
+            if (event.equals(DATE_REMOVED))
                 results[0] = true;
         });
         calendar.remove(targetDate);
@@ -60,7 +62,7 @@ public class CalendarListenerTest {
         calendar.remove(targetDate);
         final boolean [] results = new boolean[]{false};
         calendar.register(event -> {
-            if (event.equals(CalendarChangeEvent.DATE_ADDED))
+            if (event.equals(DATE_ADDED))
                 results[0] = true;
         });
         calendar.add(targetDate);
@@ -73,7 +75,7 @@ public class CalendarListenerTest {
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         final boolean [] results = new boolean[]{false};
         calendar.register(event -> {
-            if (event.equals(CalendarChangeEvent.DATE_ADDED))
+            if (event.equals(DATE_ADDED))
                 results[0] = true;
         });
         calendar.add(targetDate);
