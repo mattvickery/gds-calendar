@@ -17,13 +17,13 @@ public class LocalDateCalendarTest {
     private static final int YEAR = 2018;
     private static final int MONTH = 12;
     private static final int DAY = 30;
-    private final LocalDate startDate = LocalDate.of(YEAR, MONTH, DAY);
+    private final LocalDate endDate = LocalDate.of(YEAR, MONTH, DAY);
     private int duration = 365 * 2;
     private LocalDateCalendar calendar;
 
     @Before
     public void before() throws Exception {
-        calendar = new LocalDateCalendar(startDate, duration);
+        calendar = new LocalDateCalendar(endDate, duration);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -33,27 +33,27 @@ public class LocalDateCalendarTest {
 
     @Test
     public void monthBefore_standard() throws Exception {
-        final LocalDate monthBeforeStartDate = calendar.getLastDayOfMonthBefore(startDate);
-        assertThat(monthBeforeStartDate.getYear(), is(2018));
-        assertThat(monthBeforeStartDate.getMonthValue(), is(11));
-        assertThat(monthBeforeStartDate.getDayOfMonth(), is(30));
+        final LocalDate monthBeforeEndDate = calendar.getLastDayOfMonthBefore(endDate);
+        assertThat(monthBeforeEndDate.getYear(), is(2018));
+        assertThat(monthBeforeEndDate.getMonthValue(), is(11));
+        assertThat(monthBeforeEndDate.getDayOfMonth(), is(30));
     }
 
     @Test
     public void monthBefore_previousMonthShorter() throws Exception {
-        final LocalDate monthBeforeStartDate = calendar.getLastDayOfMonthBefore(LocalDate.of(2017, 7, 31));
-        assertThat(monthBeforeStartDate.getYear(), is(2017));
-        assertThat(monthBeforeStartDate.getMonthValue(), is(6));
-        assertThat(monthBeforeStartDate.getDayOfMonth(), is(30));
+        final LocalDate monthBeforeEndDate = calendar.getLastDayOfMonthBefore(LocalDate.of(2017, 7, 31));
+        assertThat(monthBeforeEndDate.getYear(), is(2017));
+        assertThat(monthBeforeEndDate.getMonthValue(), is(6));
+        assertThat(monthBeforeEndDate.getDayOfMonth(), is(30));
     }
 
     @Test
     public void monthBefore_previousMonthRemovedDays() throws Exception {
         calendar.remove(LocalDate.of(2017, 6, 30));
-        final LocalDate monthBeforeStartDate = calendar.getLastDayOfMonthBefore(LocalDate.of(2017, 7, 31));
-        assertThat(monthBeforeStartDate.getYear(), is(2017));
-        assertThat(monthBeforeStartDate.getMonthValue(), is(6));
-        assertThat(monthBeforeStartDate.getDayOfMonth(), is(29));
+        final LocalDate monthBeforeEndDate = calendar.getLastDayOfMonthBefore(LocalDate.of(2017, 7, 31));
+        assertThat(monthBeforeEndDate.getYear(), is(2017));
+        assertThat(monthBeforeEndDate.getMonthValue(), is(6));
+        assertThat(monthBeforeEndDate.getDayOfMonth(), is(29));
     }
 
     // // TODO: 08/08/2017 improve this with JUnit 5 exception testing.

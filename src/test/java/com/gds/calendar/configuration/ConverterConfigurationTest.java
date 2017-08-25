@@ -44,13 +44,13 @@ public class ConverterConfigurationTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        System.setProperty(ConverterConfiguration.CALENDAR_LOCATION,
+        System.setProperty(ConverterConfiguration.CALENDAR_FILE_LOCATION,
                 new ClassPathResource("dates").getURL().getPath());
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        System.clearProperty(ConverterConfiguration.CALENDAR_LOCATION);
+        System.clearProperty(ConverterConfiguration.CALENDAR_FILE_LOCATION);
     }
 
     @Test

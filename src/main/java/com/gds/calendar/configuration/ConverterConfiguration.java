@@ -35,7 +35,7 @@ import static org.springframework.util.Assert.notNull;
 }, ignoreResourceNotFound = true)
 public class ConverterConfiguration implements EnvironmentAware {
 
-    public static final String CALENDAR_LOCATION = "calendarLocation";
+    public static final String CALENDAR_FILE_LOCATION = "calendarFileLocation";
 
     private Environment environment;
     @Value("${datePattern}")
@@ -92,9 +92,9 @@ public class ConverterConfiguration implements EnvironmentAware {
     }
 
     private String holidayFileLocation() {
-        final String holidayFileLocation = environment.getProperty(CALENDAR_LOCATION);
+        final String holidayFileLocation = environment.getProperty(CALENDAR_FILE_LOCATION);
         if (holidayFileLocation == null)
-            throw new IllegalStateException("Holiday file location [" + CALENDAR_LOCATION + "] is null.");
+            throw new IllegalStateException("Holiday file location [" + CALENDAR_FILE_LOCATION + "] is null.");
         return holidayFileLocation;
     }
 

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -286,5 +287,13 @@ public class LocalDateCalendar {
         notNull(listener, "Mandatory argument 'listener' is missing.");
         listenerRegistry.add(listener);
         return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<LocalDate> getAllDates() {
+        return Collections.unmodifiableList(days);
     }
 }
