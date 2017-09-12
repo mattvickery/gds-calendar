@@ -35,13 +35,14 @@ import static org.springframework.util.Assert.notNull;
 }, ignoreResourceNotFound = true)
 public class ConverterConfiguration implements EnvironmentAware {
 
-    public static final String CALENDAR_FILE_LOCATION = "calendarFileLocation";
+    public static final String CALENDAR_DATES_LOCATION_PROPERTY_NAME = "calendarDatesLocation";
+    public static final String CALENDAR_PROPERTIES_PROPERTY_NAME = "calendar";
 
     private Environment environment;
     @Value("${datePattern}")
     private String datePattern;
-    @Value("${calendarStartDate}")
-    private String calendarStartDate;
+    @Value("${calendarEndDate}")
+    private String calendarEndDate;
     @Value("${calendarDuration}")
     private int calendarDuration;
 
@@ -75,7 +76,7 @@ public class ConverterConfiguration implements EnvironmentAware {
             public LocalDateCalendar convert(final String dateCollectionSource) {
                 notNull(dateCollectionSource, "Mandatory argument 'dateCollectionSource' is missing");
                 final LocalDateCalendar calendar = new LocalDateCalendar(
-                        stringToLocalDateConverter().convert(calendarStartDate), calendarDuration)
+                        stringToLocalDateConverter().convert(calendarEndDate), calendarDuration)
                         .removeWeekDays().removeWeekendDays();
                 try (final Reader reader = new BufferedReader(new FileReader(
                         new File(holidayFileLocation(), dateCollectionSource)))) {
@@ -92,9 +93,9 @@ public class ConverterConfiguration implements EnvironmentAware {
     }
 
     private String holidayFileLocation() {
-        final String holidayFileLocation = environment.getProperty(CALENDAR_FILE_LOCATION);
+        final String holidayFileLocation = environment.getProperty(CALENDAR_DATES_LOCATION_PROPERTY_NAME);
         if (holidayFileLocation == null)
-            throw new IllegalStateException("Holiday file location [" + CALENDAR_FILE_LOCATION + "] is null.");
+            throw new IllegalStateException("Holiday file location [" + CALENDAR_DATES_LOCATION_PROPERTY_NAME + "] is null.");
         return holidayFileLocation;
     }
 

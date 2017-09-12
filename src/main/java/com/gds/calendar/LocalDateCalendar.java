@@ -59,7 +59,7 @@ public class LocalDateCalendar {
         for (int index = 0; index < calendarPeriod; index++)
             days.add(index, endDate.minusDays(index));
         Arrays.asList(listeners).stream().forEach(listenerRegistry:: add);
-        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(INITIALISED));
+        listenerRegistry.forEach(listener -> listener.event(INITIALISED));
 
     }
 
@@ -116,7 +116,7 @@ public class LocalDateCalendar {
 
         notNull(date, MANDATORY_ARGUMENT_DATE_IS_MISSING);
         if (days.remove(date))
-            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_REMOVED));
+            listenerRegistry.forEach(listener -> listener.event(DATE_REMOVED));
         return this;
     }
 
@@ -128,7 +128,7 @@ public class LocalDateCalendar {
 
         notNull(dates, "Mandatory argument 'dates' is missing.");
         if (days.removeAll(dates))
-            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATES_REMOVED));
+            listenerRegistry.forEach(listener -> listener.event(DATES_REMOVED));
         return this;
     }
 
@@ -143,7 +143,7 @@ public class LocalDateCalendar {
                 .filter(day -> day.getDayOfWeek().equals(dayOfWeek))
                 .collect(Collectors.toList());
         if (days.removeAll(matchingDayOfWeeks))
-            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(WEEKDAY_REMOVED));
+            listenerRegistry.forEach(listener -> listener.event(WEEKDAY_REMOVED));
         return this;
     }
 
@@ -155,7 +155,7 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         calendar.days.forEach(this :: remove);
-        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(CALENDAR_REMOVED));
+        listenerRegistry.forEach(listener -> listener.event(CALENDAR_REMOVED));
         return this;
     }
 
@@ -167,7 +167,7 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         calendar.days.forEach(this :: add);
-        listenerRegistry.forEach(listener -> listener.calendarEventTriggered(CALENDAR_ADDED));
+        listenerRegistry.forEach(listener -> listener.event(CALENDAR_ADDED));
         return this;
     }
 
@@ -182,7 +182,7 @@ public class LocalDateCalendar {
             return this;
         if ((days.size() > 0) && (days.get(0).compareTo(date) < 0)) {
             days.add(0, date);
-            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
+            listenerRegistry.forEach(listener -> listener.event(DATE_ADDED));
             return this;
         }
         int lastIndexExceedingDate = 0;
@@ -194,7 +194,7 @@ public class LocalDateCalendar {
         int offset = days.size() > 0 ? 1 : 0;
         if (lastIndexExceedingDate > - 1) {
             days.add(lastIndexExceedingDate + offset, date);
-            listenerRegistry.forEach(listener -> listener.calendarEventTriggered(DATE_ADDED));
+            listenerRegistry.forEach(listener -> listener.event(DATE_ADDED));
         }
         return this;
     }

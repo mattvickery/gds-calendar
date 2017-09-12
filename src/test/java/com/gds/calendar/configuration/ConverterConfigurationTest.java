@@ -29,7 +29,7 @@ public class ConverterConfigurationTest {
 
     @Value("${datePattern}")
     private String datePattern;
-    @Value("${calendarStartDate}")
+    @Value("${calendarEndDate}")
     private String calendarStartDate;
     @Value("${calendarDuration}")
     private int calendarDuration;
@@ -44,13 +44,13 @@ public class ConverterConfigurationTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        System.setProperty(ConverterConfiguration.CALENDAR_FILE_LOCATION,
+        System.setProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME,
                 new ClassPathResource("dates").getURL().getPath());
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        System.clearProperty(ConverterConfiguration.CALENDAR_FILE_LOCATION);
+        System.clearProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME);
     }
 
     @Test

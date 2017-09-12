@@ -56,7 +56,7 @@ public class CalendarListenerTest {
     }
 
     @Test
-    public void add_callback_fromReomved() {
+    public void add_callback_fromRemoved() {
 
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         calendar.remove(targetDate);
