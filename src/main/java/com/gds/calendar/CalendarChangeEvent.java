@@ -14,5 +14,5 @@ public enum CalendarChangeEvent {
     DATES_REMOVED,
     CALENDAR_ADDED,
     CALENDAR_REMOVED,
-    WEEKDAY_REMOVED
+    DAY_OF_WEEK_REMOVED
 }

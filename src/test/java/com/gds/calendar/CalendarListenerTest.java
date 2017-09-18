@@ -25,7 +25,7 @@ public class CalendarListenerTest {
 
     @Before
     public void before() throws Exception {
-        calendar = new LocalDateCalendar(startDate, duration);
+        calendar = new LocalDateCalendar(startDate, "default", duration);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class CalendarListenerTest {
 
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         final boolean [] results = new boolean[]{false};
-        calendar.register(event -> {
+        calendar.register((event, context) -> {
             if (event.equals(DATE_REMOVED))
                 results[0] = true;
         });
@@ -47,11 +47,13 @@ public class CalendarListenerTest {
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         final boolean [] results = new boolean[]{false};
         calendar.remove(targetDate);
-        calendar.register(event -> {
+        calendar.register((event, context) -> {
             if (event.equals(DATE_REMOVED))
                 results[0] = true;
         });
-        calendar.remove(targetDate);
+        try {
+            calendar.remove(targetDate);
+        } catch(Exception e) {}
         assertThat(results[0], is(false));
     }
 
@@ -61,7 +63,7 @@ public class CalendarListenerTest {
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         calendar.remove(targetDate);
         final boolean [] results = new boolean[]{false};
-        calendar.register(event -> {
+        calendar.register((event, context) -> {
             if (event.equals(DATE_ADDED))
                 results[0] = true;
         });
@@ -74,7 +76,7 @@ public class CalendarListenerTest {
 
         final LocalDate targetDate = LocalDate.of(2017, 1, 1);
         final boolean [] results = new boolean[]{false};
-        calendar.register(event -> {
+        calendar.register((event, context) -> {
             if (event.equals(DATE_ADDED))
                 results[0] = true;
         });

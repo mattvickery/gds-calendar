@@ -8,5 +8,5 @@ package com.gds.calendar;
  */
 @FunctionalInterface
 public interface LocalDateCalendarListener {
-     void event(final CalendarChangeEvent event);
+     void event(final CalendarChangeEvent event, final ChangeEventContext context);
 }

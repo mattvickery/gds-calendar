@@ -39,7 +39,7 @@ public class ManualSpringContainerStartupTest {
         // 2. Access the calendar object through Spring's get bean method, the calendar is ready to use.
         final LocalDateCalendar calendar = applicationContext.getBean(LocalDateCalendar.class);
 
-        assertThat(calendar.getStartDate(), is(LocalDate.of(2018, 12, 18)));
+        assertThat(calendar.getStartDate(), is(LocalDate.of(2018, 12, 19)));
         assertThat(calendar.getAllDates().size(), is(2));
         assertThat(calendar.getEndDate(), is(LocalDate.of(2018, 12, 30)));
 

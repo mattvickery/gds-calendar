@@ -55,7 +55,7 @@ public class OverridingDefaultCalendarProperties {
 
     @Test
     public void startDate() {
-        assertThat(calendar.getStartDate(), is(LocalDate.of(2018,07,19)));
+        assertThat(calendar.getStartDate(), is(LocalDate.of(2018,07,20)));
     }
 
     @Test

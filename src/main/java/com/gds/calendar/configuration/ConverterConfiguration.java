@@ -45,6 +45,8 @@ public class ConverterConfiguration implements EnvironmentAware {
     private String calendarEndDate;
     @Value("${calendarDuration}")
     private int calendarDuration;
+    @Value("${calendarName}")
+    private String calendarName;
 
     @Bean
     public ConversionServiceFactoryBean conversionService() {
@@ -76,7 +78,7 @@ public class ConverterConfiguration implements EnvironmentAware {
             public LocalDateCalendar convert(final String dateCollectionSource) {
                 notNull(dateCollectionSource, "Mandatory argument 'dateCollectionSource' is missing");
                 final LocalDateCalendar calendar = new LocalDateCalendar(
-                        stringToLocalDateConverter().convert(calendarEndDate), calendarDuration)
+                        stringToLocalDateConverter().convert(calendarEndDate), calendarName, calendarDuration)
                         .removeWeekDays().removeWeekendDays();
                 try (final Reader reader = new BufferedReader(new FileReader(
                         new File(holidayFileLocation(), dateCollectionSource)))) {
