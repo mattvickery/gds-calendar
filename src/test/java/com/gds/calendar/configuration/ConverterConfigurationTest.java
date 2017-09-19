@@ -30,7 +30,7 @@ public class ConverterConfigurationTest {
     @Value("${datePattern}")
     private String datePattern;
     @Value("${calendarEndDate}")
-    private String calendarStartDate;
+    private String calendarEndDate;
     @Value("${calendarDuration}")
     private int calendarDuration;
 
@@ -55,7 +55,7 @@ public class ConverterConfigurationTest {
 
     @Test
     public void stringToDateConverter() {
-        final LocalDate convertedDate = stringLocalDateConverter.convert(calendarStartDate);
+        final LocalDate convertedDate = stringLocalDateConverter.convert(calendarEndDate);
         assertThat(convertedDate.getDayOfMonth(), is(30));
         assertThat(convertedDate.getMonthValue(), is(12));
         assertThat(convertedDate.getYear(), is(2017));
