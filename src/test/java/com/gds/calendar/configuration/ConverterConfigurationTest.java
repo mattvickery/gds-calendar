@@ -46,15 +46,20 @@ public class ConverterConfigurationTest {
     public static void beforeClass() throws Exception {
         System.setProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME,
                 new ClassPathResource("dates").getURL().getPath());
+        System.setProperty(ConverterConfiguration.CALENDAR_PROPERTIES_PROPERTY_NAME,
+                new ClassPathResource("properties").getURL().getPath());
+
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         System.clearProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME);
+        System.clearProperty(ConverterConfiguration.CALENDAR_PROPERTIES_PROPERTY_NAME);
     }
 
     @Test
     public void stringToDateConverter() {
+
         final LocalDate convertedDate = stringLocalDateConverter.convert(calendarEndDate);
         assertThat(convertedDate.getDayOfMonth(), is(30));
         assertThat(convertedDate.getMonthValue(), is(12));
