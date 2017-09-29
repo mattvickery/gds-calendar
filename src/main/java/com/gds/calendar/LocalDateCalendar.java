@@ -98,7 +98,7 @@ public class LocalDateCalendar {
         for (int index = 0; index < calendarPeriod; index++)
             days.add(index, endDate.minusDays(index));
         Arrays.asList(listeners).stream().forEach(listenerRegistry:: add);
-        listenerRegistry.forEach(listener -> listener.event(INITIALISED, context("Calendar initialised.", this)));
+        listenerRegistry.forEach(listener -> listener.event(context(INITIALISED, "Calendar initialised.", this)));
     }
 
     /**
@@ -148,8 +148,8 @@ public class LocalDateCalendar {
      */
     public LocalDateCalendar removeWeekendDays() {
         remove(DayOfWeek.SATURDAY).remove(DayOfWeek.SUNDAY);
-        listenerRegistry.forEach(listener -> listener.event(DAY_OF_WEEK_REMOVED,
-                context("All weekend dates have been removed from calendar.", this)));
+        listenerRegistry.forEach(listener -> listener.event(
+                context(DAY_OF_WEEK_REMOVED, "All weekend dates have been removed from calendar.", this)));
         return this;
     }
 
@@ -162,8 +162,8 @@ public class LocalDateCalendar {
     public LocalDateCalendar removeWeekDays() {
         remove(DayOfWeek.MONDAY).remove(DayOfWeek.TUESDAY).remove(DayOfWeek.WEDNESDAY)
                 .remove(DayOfWeek.THURSDAY).remove(DayOfWeek.FRIDAY);
-        listenerRegistry.forEach(listener -> listener.event(DAY_OF_WEEK_REMOVED,
-                context("All weekday dates have been removed from calendar.", this)));
+        listenerRegistry.forEach(listener -> listener.event(
+                context(DAY_OF_WEEK_REMOVED, "All weekday dates have been removed from calendar.", this)));
         return this;
     }
 
@@ -183,8 +183,8 @@ public class LocalDateCalendar {
         if ((! ignoreNotLocated) && (! days.contains(date)))
             throw new IllegalArgumentException("Date supplied is not managed by this calendar.");
         if (days.remove(date))
-            listenerRegistry.forEach(listener -> listener.event(DATE_REMOVED,
-                    context("Date removed from calendar.", this, date)));
+            listenerRegistry.forEach(listener -> listener.event(
+                    context(DATE_REMOVED, "Date removed from calendar.", this, date)));
         return this;
     }
 
@@ -217,8 +217,8 @@ public class LocalDateCalendar {
                 && (days.stream().filter(date -> getDay(date).isPresent()).collect(Collectors.toList()).size() > 0))
             throw new IllegalArgumentException("One or more dates supplied is not managed by this calendar.");
         if (days.removeAll(dates))
-            listenerRegistry.forEach(listener -> listener.event(DATES_REMOVED,
-                    context("Collection of dates removed from calendar ", this, dates.toArray(new LocalDate[] {}))
+            listenerRegistry.forEach(listener -> listener.event(
+                    context(DATES_REMOVED, "Collection of dates removed from calendar ", this, dates.toArray(new LocalDate[] {}))
                     )
             );
         return this;
@@ -252,8 +252,8 @@ public class LocalDateCalendar {
                 .filter(day -> day.getDayOfWeek().equals(dayOfWeek))
                 .collect(Collectors.toList());
         if (days.removeAll(matchingDayOfWeeks))
-            listenerRegistry.forEach(listener -> listener.event(DAY_OF_WEEK_REMOVED,
-                    context("Day of Week removed [" + dayOfWeek + "]", this)));
+            listenerRegistry.forEach(listener -> listener.event(
+                    context(DAY_OF_WEEK_REMOVED, "Day of Week removed [" + dayOfWeek + "]", this)));
         return this;
     }
 
@@ -270,8 +270,8 @@ public class LocalDateCalendar {
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         state(this != calendar, "A calendar cannot be removed from itself.");
         calendar.days.forEach((date) -> remove(date, true));
-        listenerRegistry.forEach(listener -> listener.event(CALENDAR_REMOVED,
-                context("Calendar dates from " + calendar.getName() + " removed from " + getName(), calendar)));
+        listenerRegistry.forEach(listener -> listener.event(
+                context(CALENDAR_REMOVED, "Calendar dates from " + calendar.getName() + " removed from " + getName(), calendar)));
         return this;
     }
 
@@ -287,8 +287,8 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         calendar.days.forEach(this :: add);
-        listenerRegistry.forEach(listener -> listener.event(CALENDAR_ADDED,
-                context("Calendar dates from " + calendar.getName() + " added to " + getName(), calendar)));
+        listenerRegistry.forEach(listener -> listener.event(
+                context(CALENDAR_ADDED, "Calendar dates from " + calendar.getName() + " added to " + getName(), calendar)));
         return this;
     }
 
@@ -312,7 +312,8 @@ public class LocalDateCalendar {
             return this;
         if ((days.size() > 0) && (days.get(0).compareTo(date) < 0)) {
             days.add(0, date);
-            listenerRegistry.forEach(listener -> listener.event(DATE_ADDED, context("New date added", this, date)));
+            listenerRegistry.forEach(listener -> listener.event(context(DATE_ADDED,
+                    "New date added to calendar.", this, date)));
             return this;
         }
         int lastIndexExceedingDate = 0;
@@ -324,7 +325,8 @@ public class LocalDateCalendar {
         int offset = days.size() > 0 ? 1 : 0;
         if (lastIndexExceedingDate > - 1) {
             days.add(lastIndexExceedingDate + offset, date);
-            listenerRegistry.forEach(listener -> listener.event(DATE_ADDED, context("New date added", this, date)));
+            listenerRegistry.forEach(listener -> listener.event(context(DATE_ADDED,
+                    "New date added to calendar.", this, date)));
         }
         return this;
     }
@@ -584,7 +586,8 @@ public class LocalDateCalendar {
      * @param dates    an optional list of dates.
      * @return
      */
-    private ChangeEventContext context(final String message, final LocalDateCalendar calendar, final LocalDate... dates) {
+    private ChangeEventContext context(final CalendarChangeEvent event, final String message,
+                                       final LocalDateCalendar calendar, final LocalDate... dates) {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         return new ChangeEventContext() {
@@ -601,6 +604,11 @@ public class LocalDateCalendar {
             @Override
             public List<LocalDate> getDates() {
                 return Arrays.asList(dates);
+            }
+
+            @Override
+            public CalendarChangeEvent getCalendarChangeEvent() {
+                return event;
             }
         };
     }

@@ -12,4 +12,5 @@ public interface ChangeEventContext {
     Optional<String> getMessage();
     LocalDateCalendar getCalendar();
     List<LocalDate> getDates();
+    CalendarChangeEvent getCalendarChangeEvent();
 }
