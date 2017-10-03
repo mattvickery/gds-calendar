@@ -114,15 +114,17 @@ public class LocalDateCalendar {
     public Optional<LocalDate> getDayBefore(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
-        if ((date.isAfter(endDate)) || (date.isBefore(getStartDate())))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+        if ((date.isAfter(getEndDate())) || (date.isBefore(getStartDate())))
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         if (date.isEqual(getStartDate()))
-            throw new IllegalStateException("Date before is outside of calendar range.");
+            throw new IllegalArgumentException("Date before is outside of calendar range.");
+        if (days.isEmpty())
+            throw new IllegalArgumentException("Cannot use getDayBefore(...) on an empty calendar.");
         if (days.indexOf(date) > - 1)
             return Optional.of(days.get(days.indexOf(date) + 1));
-        int nearestAfterIndex = 0;
+        int nearestAfterIndex = days.size() - 1;
         for (int index = days.size() - 1; index >= 0; index--)
-            if (days.get(index).isBefore(date))
+             if (date.isBefore(days.get(index)))
                 nearestAfterIndex = index;
         return Optional.of(days.get(nearestAfterIndex));
     }
@@ -308,20 +310,15 @@ public class LocalDateCalendar {
     public LocalDateCalendar add(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
+
+        if (date.isAfter(endDate) || date.isBefore(getStartDate()))
+            throw new IllegalStateException("Date supplied is outside of calendar range.");
         if (days.indexOf(date) > - 1)
             return this;
-        if ((days.size() > 0) && (days.get(0).compareTo(date) < 0)) {
-            days.add(0, date);
-            listenerRegistry.forEach(listener -> listener.event(context(DATE_ADDED,
-                    "New date added to calendar.", this, date)));
-            return this;
-        }
         int lastIndexExceedingDate = 0;
-        for (int index = 0; index < days.size(); index++) {
-            int gap = days.get(index).compareTo(date);
-            if ((gap > 0) && (gap < days.get(lastIndexExceedingDate).compareTo(date)))
+        for (int index = 0; index < days.size(); index++)
+            if (days.get(index).isBefore(date))
                 lastIndexExceedingDate = index;
-        }
         int offset = days.size() > 0 ? 1 : 0;
         if (lastIndexExceedingDate > - 1) {
             days.add(lastIndexExceedingDate + offset, date);
