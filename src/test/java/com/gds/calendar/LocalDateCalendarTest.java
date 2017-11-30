@@ -5,8 +5,11 @@ import org.junit.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.gds.calendar.CalendarChangeEvent.CALENDAR_ADDED;
 import static java.time.DayOfWeek.FRIDAY;
@@ -581,5 +584,26 @@ public class LocalDateCalendarTest {
         final LocalDate testDate = LocalDate.of(2017, 9, 2);
         calendar.remove(testDate.minusDays(1));
         assertThat(calendar.isFirstDayInTheMonth(testDate), is(true));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getFirstDayInTheMonth_null_1() {
+        calendar.getFirstDayOfTheMonth(null, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getFirstDayInTheMonth_null_2() {
+        calendar.getFirstDayOfTheMonth(Year.of(2017), null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getFirstDayInTheMonth_null_3() {
+        calendar.getFirstDayOfTheMonth(null, Month.AUGUST);
+    }
+
+    @Test
+    public void getFirstDayInTheMonth_() {
+        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), Month.AUGUST);
+        assertThat(date.get(), equalTo(LocalDate.of(2017,8,1)));
     }
 }
