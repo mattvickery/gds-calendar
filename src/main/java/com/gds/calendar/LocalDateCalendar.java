@@ -97,7 +97,7 @@ public class LocalDateCalendar {
         this.calendarName = calendarName;
         for (int index = 0; index < calendarPeriod; index++)
             days.add(index, endDate.minusDays(index));
-        Arrays.asList(listeners).stream().forEach(listenerRegistry:: add);
+        listenerRegistry.addAll(Arrays.asList(listeners));
         listenerRegistry.forEach(listener -> listener.event(context(INITIALISED, "Calendar initialised.", this)));
     }
 
@@ -117,14 +117,14 @@ public class LocalDateCalendar {
         if ((date.isAfter(getEndDate())) || (date.isBefore(getStartDate())))
             throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         if (date.isEqual(getStartDate()))
-            throw new IllegalArgumentException("Date before is outside of calendar range.");
+            throw new IllegalArgumentException("Date before will be outside of calendar range.");
         if (days.isEmpty())
             throw new IllegalArgumentException("Cannot use getDayBefore(...) on an empty calendar.");
-        if (days.indexOf(date) > - 1)
+        if (days.indexOf(date) > -1)
             return Optional.of(days.get(days.indexOf(date) + 1));
         int nearestAfterIndex = days.size() - 1;
         for (int index = days.size() - 1; index >= 0; index--)
-             if (date.isBefore(days.get(index)))
+            if (date.isBefore(days.get(index)))
                 nearestAfterIndex = index;
         return Optional.of(days.get(nearestAfterIndex));
     }
@@ -139,7 +139,7 @@ public class LocalDateCalendar {
     public Optional<LocalDate> getDay(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
-        return days.stream().filter(indexDate -> date.equals(indexDate)).findFirst();
+        return days.stream().filter(date::equals).findFirst();
     }
 
     /**
@@ -177,12 +177,12 @@ public class LocalDateCalendar {
      * @param date the value to remove from the calendar.
      * @return the calendar instance.
      * @throws IllegalArgumentException if the date argument is null and if the 'ignoreNotLocated' is set to false and
-     * the date is not located in the calendar.
+     *                                  the date is not located in the calendar.
      */
     public LocalDateCalendar remove(final LocalDate date, final boolean ignoreNotLocated) {
 
         notNull(date, "Mandatory argument 'dates' is missing.");
-        if ((! ignoreNotLocated) && (! days.contains(date)))
+        if ((!ignoreNotLocated) && (!days.contains(date)))
             throw new IllegalArgumentException("Date supplied is not managed by this calendar.");
         if (days.remove(date))
             listenerRegistry.forEach(listener -> listener.event(
@@ -193,6 +193,7 @@ public class LocalDateCalendar {
     /**
      * Remove the date from the calendar, if the date is not present in the calendar then the remove operation
      * will return silently without attempting to delete the date.
+     *
      * @param date
      * @return
      */
@@ -215,12 +216,12 @@ public class LocalDateCalendar {
     public LocalDateCalendar removeAll(final List<LocalDate> dates, final boolean ignoreUnknownDates) {
 
         notNull(dates, "Mandatory argument 'dates' is missing.");
-        if ((! ignoreUnknownDates)
-                && (days.stream().filter(date -> getDay(date).isPresent()).collect(Collectors.toList()).size() > 0))
+        if ((!ignoreUnknownDates) && (dates.stream().anyMatch(date -> !this.getDay(date).isPresent())))
             throw new IllegalArgumentException("One or more dates supplied is not managed by this calendar.");
         if (days.removeAll(dates))
             listenerRegistry.forEach(listener -> listener.event(
-                    context(DATES_REMOVED, "Collection of dates removed from calendar ", this, dates.toArray(new LocalDate[] {}))
+                    context(DATES_REMOVED, "Collection of dates removed from calendar.",
+                            this, dates.toArray(new LocalDate[]{}))
                     )
             );
         return this;
@@ -271,9 +272,10 @@ public class LocalDateCalendar {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
         state(this != calendar, "A calendar cannot be removed from itself.");
-        calendar.days.forEach((date) -> remove(date, true));
+        calendar.days.forEach(date -> this.remove(date, true));
         listenerRegistry.forEach(listener -> listener.event(
-                context(CALENDAR_REMOVED, "Calendar dates from " + calendar.getName() + " removed from " + getName(), calendar)));
+                context(CALENDAR_REMOVED, "Calendar dates from " + calendar.getName() + " removed from "
+                        + getName() + ".", calendar)));
         return this;
     }
 
@@ -288,9 +290,10 @@ public class LocalDateCalendar {
     public LocalDateCalendar add(final LocalDateCalendar calendar) {
 
         notNull(calendar, "Mandatory argument 'calendar' is missing.");
-        calendar.days.forEach(this :: add);
+        calendar.days.forEach(this::add);
         listenerRegistry.forEach(listener -> listener.event(
-                context(CALENDAR_ADDED, "Calendar dates from " + calendar.getName() + " added to " + getName(), calendar)));
+                context(CALENDAR_ADDED, "Calendar dates from " + calendar.getName() + " added to "
+                        + getName() + ".", calendar)));
         return this;
     }
 
@@ -313,14 +316,14 @@ public class LocalDateCalendar {
 
         if (date.isAfter(endDate) || date.isBefore(getStartDate()))
             throw new IllegalStateException("Date supplied is outside of calendar range.");
-        if (days.indexOf(date) > - 1)
+        if (days.indexOf(date) > -1)
             return this;
         int lastIndexExceedingDate = 0;
         for (int index = 0; index < days.size(); index++)
             if (days.get(index).isBefore(date))
                 lastIndexExceedingDate = index;
         int offset = days.size() > 0 ? 1 : 0;
-        if (lastIndexExceedingDate > - 1) {
+        if (lastIndexExceedingDate > -1) {
             days.add(lastIndexExceedingDate + offset, date);
             listenerRegistry.forEach(listener -> listener.event(context(DATE_ADDED,
                     "New date added to calendar.", this, date)));
@@ -368,7 +371,8 @@ public class LocalDateCalendar {
 
     /**
      * Return a representation that this is the first day in the month. This query works on a calendar object that
-     * may have had days removed so the first day in the month may be specific to each calendar instance.
+     * may have had days removed so the first day in the month may be specific to each calendar instance and to each
+     * month's days state.
      *
      * @param date the lookup key.
      * @return true if the date supplied is the first date in the month, false otherwise.
@@ -494,7 +498,7 @@ public class LocalDateCalendar {
                 day -> (day.getMonthValue() == date.minusMonths(monthSubtraction).getMonthValue()) &&
                         (day.getYear() == date.minusMonths(monthSubtraction).getYear()))
                 .collect(Collectors.toList());
-        return Optional.ofNullable(! daysInMonthBefore.isEmpty() ? daysInMonthBefore.get(0) : null);
+        return Optional.ofNullable(!daysInMonthBefore.isEmpty() ? daysInMonthBefore.get(0) : null);
     }
 
     /**

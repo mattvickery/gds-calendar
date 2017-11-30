@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gds.calendar.CalendarChangeEvent.CALENDAR_ADDED;
 import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SATURDAY;
@@ -110,28 +111,28 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getStartDate(), is(expectedStartDate));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_nullArgument() {
         calendar.getDayBefore(null);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_emptyCalendar() {
         calendar.removeWeekDays().removeWeekendDays();
         calendar.getDayBefore(calendar.getEndDate());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_beforeCalendarStarts() {
         calendar.getDayBefore(calendar.getStartDate().minusDays(1));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_afterCalendarEnds() {
         calendar.getDayBefore(calendar.getEndDate().plusDays(1));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_startDate() {
         calendar.getDayBefore(calendar.getStartDate());
     }
@@ -143,7 +144,7 @@ public class LocalDateCalendarTest {
         assertThat(dayBefore, is(calendar.getStartDate()));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDayBefore_afterEndDate() {
         calendar.getDayBefore(calendar.getEndDate().plusDays(1));
     }
@@ -152,10 +153,10 @@ public class LocalDateCalendarTest {
     public void getDayBefore_endDate() {
 
         LocalDate dayBeforeEndDate = calendar.getDayBefore(calendar.getEndDate()).get();
-        assertThat(dayBeforeEndDate, equalTo(LocalDate.of(2018,12,29)));
-        calendar.remove(LocalDate.of(2018,12,29));
+        assertThat(dayBeforeEndDate, equalTo(LocalDate.of(2018, 12, 29)));
+        calendar.remove(LocalDate.of(2018, 12, 29));
         dayBeforeEndDate = calendar.getDayBefore(calendar.getEndDate()).get();
-        assertThat(dayBeforeEndDate, equalTo(LocalDate.of(2018,12,28)));
+        assertThat(dayBeforeEndDate, equalTo(LocalDate.of(2018, 12, 28)));
     }
 
     @Test
@@ -166,7 +167,7 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getDayBefore(calendar.getEndDate()).get(), equalTo(saturday));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getDay_nullArgument() {
         calendar.getDay(null);
     }
@@ -220,7 +221,7 @@ public class LocalDateCalendarTest {
     @Test
     public void removeWeekdays_beforeAndAfter() {
 
-        final LocalDate [] weekdays = new LocalDate[] {LocalDate.of(2017, 9, 11), LocalDate.of(2017, 9, 12),
+        final LocalDate[] weekdays = new LocalDate[]{LocalDate.of(2017, 9, 11), LocalDate.of(2017, 9, 12),
                 LocalDate.of(2017, 9, 13), LocalDate.of(2017, 9, 14), LocalDate.of(2017, 9, 15)};
         for (int index = 0; index < weekdays.length; index++)
             assertThat(calendar.getDay(weekdays[index]).isPresent(), is(true));
@@ -229,7 +230,7 @@ public class LocalDateCalendarTest {
             assertThat(calendar.getDay(weekdays[index]).isPresent(), is(false));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void remove_date_null() {
 
         final LocalDate date = null;
@@ -244,12 +245,12 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getDay(calendar.getStartDate()).isPresent(), is(false));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void remove_date_notPresent() {
-        calendar.remove(LocalDate.of(2015,1,1));
+        calendar.remove(LocalDate.of(2015, 1, 1));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void removeAll_nullArgument() {
         calendar.removeAll(null);
     }
@@ -260,10 +261,10 @@ public class LocalDateCalendarTest {
         // todo:
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void removeAll_someOutsideRange_ignoreUnknownDatesFalse() {
 
-        final LocalDate outsideCalendarRange = LocalDate.of(2010,1,1);
+        final LocalDate outsideCalendarRange = LocalDate.of(2010, 1, 1);
         assertThat(calendar.getDay(outsideCalendarRange).isPresent(), is(false));
         calendar.removeAll(new ArrayList<LocalDate>() {{
             add(outsideCalendarRange);
@@ -273,7 +274,7 @@ public class LocalDateCalendarTest {
     @Test
     public void removeAll_someOutsideRange_ignoreUnknownDatesTrue() {
 
-        final LocalDate outsideCalendarRange = LocalDate.of(2010,1,1);
+        final LocalDate outsideCalendarRange = LocalDate.of(2010, 1, 1);
         assertThat(calendar.getDay(outsideCalendarRange).isPresent(), is(false));
         calendar.removeAll(new ArrayList<LocalDate>() {{
             add(outsideCalendarRange);
@@ -281,17 +282,17 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getDay(outsideCalendarRange).isPresent(), is(false));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void removeAll_someOutsideRange_ignoreUnknownDatesDefault() {
 
-        final LocalDate outsideCalendarRange = LocalDate.of(2010,1,1);
+        final LocalDate outsideCalendarRange = LocalDate.of(2010, 1, 1);
         assertThat(calendar.getDay(outsideCalendarRange).isPresent(), is(false));
         calendar.removeAll(new ArrayList<LocalDate>() {{
             add(outsideCalendarRange);
         }});
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void remove_dayOfWeek_nullArgument() {
 
         final DayOfWeek dayOfWeek = null;
@@ -325,7 +326,7 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getDay(sunday).isPresent(), is(false));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void remove_calendar_null() {
         final LocalDateCalendar nullCalendar = null;
         calendar.remove(nullCalendar);
@@ -341,7 +342,7 @@ public class LocalDateCalendarTest {
         assertThat(allDatesBefore, equalTo(allDatesAfter));
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void remove_calendar_fromItself() {
         calendar.remove(calendar);
     }
@@ -362,7 +363,16 @@ public class LocalDateCalendarTest {
     @Test
     public void remove_calendar_overlappingDates() {
 
-        // todo:
+        final LocalDateCalendar workCalendar
+                = new LocalDateCalendar(endDate, "workCalendar", 21);
+        final LocalDateCalendar overtimeCalendar
+                = new LocalDateCalendar(endDate, "overtimeCalendar", 7);
+        assertThat(workCalendar.getAllDates().size(), is(21));
+        assertThat(overtimeCalendar.getAllDates().size(), is(7));
+
+        workCalendar.remove(overtimeCalendar);
+        assertThat(workCalendar.getAllDates().size(), is(14));
+        assertThat(overtimeCalendar.getAllDates().size(), is(7));
     }
 
     @Test
@@ -375,14 +385,14 @@ public class LocalDateCalendarTest {
         assertThat(allDatesBefore, equalTo(allDatesAfter));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void add_calendar_null() {
-
+        final LocalDateCalendar localDateCalendar = null;
+        calendar.add(localDateCalendar);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void add_date_null() {
-
         final LocalDate nullDate = null;
         calendar.add(nullDate);
     }
@@ -416,16 +426,16 @@ public class LocalDateCalendarTest {
 
         assertThat(sizePreChange, is(sizePostChange));
         // Check object identifiers are the same.
-        assertThat(datePreChange == datePostChange, is (true));
+        assertThat(datePreChange == datePostChange, is(true));
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void add_date_beforeStart() {
         final LocalDate date = LocalDate.of(2010, 9, 18);
         calendar.add(date);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void add_date_afterEnd() {
         final LocalDate date = LocalDate.of(2020, 9, 18);
         calendar.add(date);
@@ -522,5 +532,54 @@ public class LocalDateCalendarTest {
         assertThat(calendar.getAllDates().size(), is(6));
         calendar.add(thursday);
         assertThat(calendar.getAllDates().size(), is(7));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getDatesForDayOfWeek_null() {
+        calendar.getDatesForDaysOfWeek(null);
+    }
+
+    @Test
+    public void getDatesForDayOfWeek_saturday() {
+        final List<LocalDate> saturdays = calendar.getDatesForDaysOfWeek(SATURDAY);
+        assertThat(saturdays.stream()
+                .map(LocalDate::getDayOfWeek)
+                .anyMatch(dayOfWeek -> !dayOfWeek.equals(SATURDAY)), is(false));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void isFirstDayInTheMonth_null() {
+        calendar.isFirstDayInTheMonth(null);
+    }
+
+    @Test
+    public void isFirstDayInTheMonth_outsideCalendarRangeAfter() {
+        final LocalDate testDate = LocalDate.of(2020, 9, 1);
+        assertThat(calendar.isFirstDayInTheMonth(testDate), is(false));
+    }
+
+    @Test
+    public void isFirstDayInTheMonth_outsideCalendarRangeBefore() {
+        final LocalDate testDate = LocalDate.of(2016, 9, 1);
+        assertThat(calendar.isFirstDayInTheMonth(testDate), is(false));
+    }
+
+    @Test
+    public void isFirstDayInTheMonth_insideCalendarRange() {
+        final LocalDate testDate = LocalDate.of(2017, 9, 1);
+        assertThat(calendar.isFirstDayInTheMonth(testDate), is(true));
+    }
+
+    @Test
+    public void isFirstDayInTheMonth_insideCalendarRange_2() {
+        final LocalDate testDate = LocalDate.of(2017, 9, 2);
+        assertThat(calendar.isFirstDayInTheMonth(testDate), is(false));
+    }
+
+    @Test
+    public void isFirstDayInTheMonth_insideCalendarRange_firstDayRemoved() {
+        final LocalDate testDate = LocalDate.of(2017, 9, 2);
+        calendar.remove(testDate.minusDays(1));
+        assertThat(calendar.isFirstDayInTheMonth(testDate), is(true));
     }
 }
