@@ -114,7 +114,7 @@ public class LocalDateCalendar {
     public Optional<LocalDate> getDayBefore(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
-        if ((date.isAfter(getEndDate())) || (date.isBefore(getStartDate())))
+        if (isOutsideOfCalendarRange(date))
             throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         if (date.isEqual(getStartDate()))
             throw new IllegalArgumentException("Date before will be outside of calendar range.");
@@ -314,7 +314,7 @@ public class LocalDateCalendar {
 
         notNull(date, "Mandatory argument 'date' is missing.");
 
-        if (date.isAfter(endDate) || date.isBefore(getStartDate()))
+        if (isOutsideOfCalendarRange(date))
             throw new IllegalStateException("Date supplied is outside of calendar range.");
         if (days.indexOf(date) > -1)
             return this;
@@ -381,6 +381,8 @@ public class LocalDateCalendar {
     public final boolean isFirstDayInTheMonth(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
+        if (isOutsideOfCalendarRange(date))
+            throw new IllegalStateException("Date supplied is outside of calendar range.");
         return days.contains(date) && getDayBefore(date).get().getMonthValue() != date.getMonthValue();
     }
 
@@ -466,6 +468,8 @@ public class LocalDateCalendar {
     public boolean isDayOfTheMonth(final LocalDate date, final int dayOffset) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
+        if (isOutsideOfCalendarRange(date))
+            throw new IllegalStateException("Date supplied is outside of calendar range.");
         state(dayOffset >= 0, "Argument 'dayOffset' must be >= 0");
         return days.contains(date)
                 && ((days.indexOf(date) + (dayOffset - 1)) <= days.size())
@@ -480,6 +484,8 @@ public class LocalDateCalendar {
     public Optional<LocalDate> getLastDayOfMonthBefore(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
+        if (isOutsideOfCalendarRange(date))
+            throw new IllegalStateException("Date supplied is outside of calendar range.");
         return getLastDayOfMonthBefore(date, 1);
     }
 
@@ -494,6 +500,8 @@ public class LocalDateCalendar {
 
         notNull(date, "Mandatory argument 'date' is missing.");
         state(monthSubtraction >= 0, "Argument 'monthSubtraction' must be >= 0");
+        if (isOutsideOfCalendarRange(date))
+            throw new IllegalStateException("Date supplied is outside of calendar range.");
         final List<LocalDate> daysInMonthBefore = days.stream().filter(
                 day -> (day.getMonthValue() == date.minusMonths(monthSubtraction).getMonthValue()) &&
                         (day.getYear() == date.minusMonths(monthSubtraction).getYear()))
@@ -577,6 +585,15 @@ public class LocalDateCalendar {
      */
     public static LocalDateCalendar empty() {
         return emptyCalendar;
+    }
+
+    /**
+     * Is the supplied date within the range of dates that this calendar handles.
+     * @param date the date with which to do the lookup.
+     * @return true if the date is outside the range handled by this calendar, false otherwise.
+     */
+    public boolean isOutsideOfCalendarRange(final LocalDate date) {
+        return date.isAfter(endDate) || date.isBefore(getStartDate());
     }
 
     /**

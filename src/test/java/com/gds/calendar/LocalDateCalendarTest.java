@@ -94,9 +94,9 @@ public class LocalDateCalendarTest {
         assertThat(monthBeforeEndDate.getDayOfMonth(), is(29));
     }
 
-    @Test
+    @Test (expected = IllegalStateException.class)
     public void monthBefore_outsideCalendarRange() throws Exception {
-        assertThat(calendar.getLastDayOfMonthBefore(LocalDate.of(2019, 7, 31)).isPresent(), is(false));
+        calendar.getLastDayOfMonthBefore(LocalDate.of(2019, 7, 31));
     }
 
     @Test
@@ -556,13 +556,13 @@ public class LocalDateCalendarTest {
         calendar.isFirstDayInTheMonth(null);
     }
 
-    @Test
+    @Test (expected = IllegalStateException.class)
     public void isFirstDayInTheMonth_outsideCalendarRangeAfter() {
         final LocalDate testDate = LocalDate.of(2020, 9, 1);
-        assertThat(calendar.isFirstDayInTheMonth(testDate), is(false));
+        calendar.isFirstDayInTheMonth(testDate);
     }
 
-    @Test
+    @Test (expected = IllegalStateException.class)
     public void isFirstDayInTheMonth_outsideCalendarRangeBefore() {
         final LocalDate testDate = LocalDate.of(2016, 9, 1);
         assertThat(calendar.isFirstDayInTheMonth(testDate), is(false));
@@ -626,5 +626,40 @@ public class LocalDateCalendarTest {
     public void getFirstDayInTheMonth_() {
         Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), AUGUST);
         assertThat(date.get(), equalTo(LocalDate.of(2017,8,1)));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getDaysInMonth_null_1(){
+        calendar.getDaysInMonth(null, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getDaysInMonth_null_2(){
+        calendar.getDaysInMonth(Year.of(2017), null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getDaysInMonth_null_3(){
+        calendar.getDaysInMonth(null, Month.AUGUST);
+
+    }
+
+    @Test
+    public void getDaysInMonth_insideCalendarRange(){
+        final List<LocalDate> days = calendar.getDaysInMonth(Year.of(2017), Month.AUGUST);
+        assertThat(days.size(), is(31));
+    }
+
+    @Test
+    public void getDaysInMonth_insideCalendarRange_daysRemoved(){
+        calendar.removeWeekendDays();
+        final List<LocalDate> days = calendar.getDaysInMonth(Year.of(2017), Month.AUGUST);
+        assertThat(days.size(), is(23));
+    }
+
+    @Test
+    public void getDaysInMonth_outsideCalendarRange(){
+        final List<LocalDate> days = calendar.getDaysInMonth(Year.of(2010), Month.AUGUST);
+        assertThat(days.size(), is(0));
     }
 }
