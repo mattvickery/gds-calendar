@@ -403,7 +403,7 @@ public class LocalDateCalendar {
         final List<LocalDate> subsetOfDays = getDaysInMonth(year, month);
         if (subsetOfDays.isEmpty())
             Optional.empty();
-        return Optional.of(subsetOfDays.get(0));
+        return Optional.of(subsetOfDays.get(subsetOfDays.size() - 1));
     }
 
     /**
