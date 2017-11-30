@@ -19,6 +19,7 @@ import static java.time.DayOfWeek.SUNDAY;
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.TUESDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
+import static java.time.Month.AUGUST;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -598,12 +599,32 @@ public class LocalDateCalendarTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void getFirstDayInTheMonth_null_3() {
-        calendar.getFirstDayOfTheMonth(null, Month.AUGUST);
+        calendar.getFirstDayOfTheMonth(null, AUGUST);
     }
 
     @Test
+    public void getFirstDayInTheMonth_insideCalendarRange() {
+        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), AUGUST);
+        assertThat(date.get(), equalTo(LocalDate.of(2017,8,1)));
+    }
+
+    @Test
+    public void getFirstDayInTheMonth_insideCalendarRange_firstDayRemoved() {
+        calendar.remove(LocalDate.of(2017,8,1));
+        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), AUGUST);
+        assertThat(date.get(), equalTo(LocalDate.of(2017,8,2)));
+    }
+
+    @Test
+    public void getFirstDayInTheMonth_outsideCalendarRange() {
+        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2010), AUGUST);
+        assertThat(date.isPresent(), is(false));
+    }
+
+
+    @Test
     public void getFirstDayInTheMonth_() {
-        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), Month.AUGUST);
+        Optional<LocalDate> date = calendar.getFirstDayOfTheMonth(Year.of(2017), AUGUST);
         assertThat(date.get(), equalTo(LocalDate.of(2017,8,1)));
     }
 }
