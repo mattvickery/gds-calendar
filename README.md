@@ -1,3 +1,4 @@
 # gds-calendar
 
-See the Wiki [https://github.com/mattvickery/gds-calendar/wiki] for full documentation
+Wiki: https://github.com/mattvickery/gds-calendar/wiki]
+CI at https://travis-ci.org/mattvickery/gds-calendar
