@@ -308,14 +308,14 @@ public class LocalDateCalendar {
      *
      * @param date the date which will undergo attempted insertion.
      * @return the calendar instance.
-     * @throws IllegalArgumentException if the supplied date is null.
+     * @throws IllegalArgumentException if the supplied date is null or outside the calendar range.
      */
     public LocalDateCalendar add(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
 
         if (isOutsideOfCalendarRange(date))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         if (days.indexOf(date) > -1)
             return this;
         int lastIndexExceedingDate = 0;
@@ -376,13 +376,13 @@ public class LocalDateCalendar {
      *
      * @param date the lookup key.
      * @return true if the date supplied is the first date in the month, false otherwise.
-     * @throws IllegalArgumentException if the supplied date is null.
+     * @throws IllegalArgumentException if the supplied date is null or outside the calendar range.
      */
     public final boolean isFirstDayInTheMonth(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
         if (isOutsideOfCalendarRange(date))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         return days.contains(date) && getDayBefore(date).get().getMonthValue() != date.getMonthValue();
     }
 
@@ -462,14 +462,14 @@ public class LocalDateCalendar {
      * @param date      the value used as a lookup key in the set of managed dates.
      * @param dayOffset the dayOffset in days used for comparison purposes.
      * @return true if the date supplied is the correct dayOffset in the month, false otherwise.
-     * @throws IllegalArgumentException if the supplied date is null.
+     * @throws IllegalArgumentException if the supplied date is null or outside the calendar range.
      * @throws IllegalStateException    if the supplied dayOffset is not >= zero.
      */
     public boolean isDayOfTheMonth(final LocalDate date, final int dayOffset) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
         if (isOutsideOfCalendarRange(date))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         state(dayOffset >= 0, "Argument 'dayOffset' must be >= 0");
         return days.contains(date)
                 && ((days.indexOf(date) + (dayOffset - 1)) <= days.size())
@@ -479,13 +479,13 @@ public class LocalDateCalendar {
     /**
      * @param date
      * @return
-     * @throws IllegalArgumentException if the supplied date is null.
+     * @throws IllegalArgumentException if the supplied date is null or outside the calendar range.
      */
     public Optional<LocalDate> getLastDayOfMonthBefore(final LocalDate date) {
 
         notNull(date, "Mandatory argument 'date' is missing.");
         if (isOutsideOfCalendarRange(date))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         return getLastDayOfMonthBefore(date, 1);
     }
 
@@ -493,7 +493,7 @@ public class LocalDateCalendar {
      * @param date
      * @param monthSubtraction
      * @return
-     * @throws IllegalArgumentException if the supplied date is null.
+     * @throws IllegalArgumentException iif the supplied date is null or outside the calendar range.
      * @throws IllegalStateException    if the supplied monthSubtraction is not >= zero.
      */
     public Optional<LocalDate> getLastDayOfMonthBefore(final LocalDate date, final int monthSubtraction) {
@@ -501,7 +501,7 @@ public class LocalDateCalendar {
         notNull(date, "Mandatory argument 'date' is missing.");
         state(monthSubtraction >= 0, "Argument 'monthSubtraction' must be >= 0");
         if (isOutsideOfCalendarRange(date))
-            throw new IllegalStateException("Date supplied is outside of calendar range.");
+            throw new IllegalArgumentException("Date supplied is outside of calendar range.");
         final List<LocalDate> daysInMonthBefore = days.stream().filter(
                 day -> (day.getMonthValue() == date.minusMonths(monthSubtraction).getMonthValue()) &&
                         (day.getYear() == date.minusMonths(monthSubtraction).getYear()))
@@ -541,41 +541,6 @@ public class LocalDateCalendar {
      */
     public String getName() {
         return calendarName;
-    }
-
-    /**
-     * Create a new calendar from the intersection of the supplied calendars. The new calendar will be configured with
-     * a start date that is the earliest in the supplied calendars and with an end date that is the latest in the
-     * supplied calendars. All registered listeners will not be transfered from the source calendars to the new
-     * target calendar.
-     *
-     * @param calendars a source of members for the intersection operation.
-     * @return a new calendar representing the intersection
-     * @throws IllegalArgumentException if the calendars argument is null.
-     * @throws IllegalStateException    if the list of calendars is empty.
-     */
-    public static LocalDateCalendar intersect(final LocalDateCalendar... calendars) {
-
-        notNull(calendars, "Mandatory argument 'calendars' is missing.");
-        state(calendars.length < 1, "Cannot intersect on an empty list of calendars.");
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    /**
-     * Create a new calendar from the union of supplied calendars. The new calendar will be configured with a start date
-     * that is the earliest in the supplied calendars and with an end date that is the latest in the supplied calendars.
-     * All registered listeners will not be transfered from the source calendars to the new target calendar.
-     *
-     * @param calendars a source of members for the union operation.
-     * @return a new calendar representing the union of supplied calendars.
-     * @throws IllegalArgumentException if the calendars argument is null.
-     * @throws IllegalStateException    if the list of calendars is empty.
-     */
-    public static LocalDateCalendar union(final LocalDateCalendar... calendars) {
-
-        notNull(calendars, "Mandatory argument 'calendars' is missing.");
-        state(calendars.length < 1, "Cannot intersect on an empty list of calendars.");
-        throw new UnsupportedOperationException("not implemented");
     }
 
     /**
