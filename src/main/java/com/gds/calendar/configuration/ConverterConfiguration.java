@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 import static org.springframework.util.Assert.notNull;
+import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * @author Matt Vickery (matt.d.vickery@greendotsoftware.co.uk)
@@ -42,7 +43,7 @@ public class ConverterConfiguration implements EnvironmentAware {
     @Value("${datePattern}")
     private String datePattern;
     @Value("${calendarEndDate}")
-    private String calendarEndDate;
+    private String calendarEndDateText;
     @Value("${calendarDuration}")
     private int calendarDuration;
     @Value("${calendarName}")
@@ -61,35 +62,31 @@ public class ConverterConfiguration implements EnvironmentAware {
 
     @Bean
     public Converter<String, LocalDate> stringToLocalDateConverter() {
-        return new Converter<String, LocalDate>() {
-            @Override
-            public LocalDate convert(final String date) {
-                notNull(date, "Mandatory argument 'date' is missing");
-                return LocalDate.parse(date.trim(), DateTimeFormatter.ofPattern(datePattern));
-            }
+        return (LocalDateConverter) date -> {
+            notNull(date, "Mandatory argument 'date' is missing");
+            return LocalDate.parse(date.trim(), DateTimeFormatter.ofPattern(datePattern));
         };
     }
 
     @Bean
     public Converter<String, LocalDateCalendar> dateCollectionSourceToCalendarConverter() {
 
-        return new Converter<String, LocalDateCalendar>() {
-            @Override
-            public LocalDateCalendar convert(final String dateCollectionSource) {
-                notNull(dateCollectionSource, "Mandatory argument 'dateCollectionSource' is missing");
-                final LocalDateCalendar calendar = new LocalDateCalendar(
-                        stringToLocalDateConverter().convert(calendarEndDate), calendarName, calendarDuration)
-                        .removeWeekDays().removeWeekendDays();
-                try (final Reader reader = new BufferedReader(new FileReader(
-                        new File(holidayFileLocation(), dateCollectionSource)))) {
-                    CSVFormat.DEFAULT.parse(reader).getRecords().stream().forEach(
-                            record -> record.forEach(
-                                    value -> calendar.add(stringToLocalDateConverter().convert(value))
-                            ));
-                    return calendar;
-                } catch (IOException e) {
-                    throw new IllegalStateException("Directory or file name correct?", e);
-                }
+        return (LocalDateCalendarConverter) dateCollectionSource -> {
+            notNull(dateCollectionSource, "Mandatory argument 'dateCollectionSource' is missing");
+            final LocalDate calendarEndDate = isEmpty(calendarEndDateText) ? LocalDate.now()
+                    : stringToLocalDateConverter().convert(calendarEndDateText);
+            final LocalDateCalendar calendar = new LocalDateCalendar(calendarEndDate, calendarName, calendarDuration)
+                    .removeWeekDays().removeWeekendDays();
+
+            try (final Reader reader = new BufferedReader(new FileReader(
+                    new File(holidayFileLocation(), dateCollectionSource)))) {
+                CSVFormat.DEFAULT.parse(reader).getRecords().forEach(
+                        record -> record.forEach(
+                                value -> calendar.add(stringToLocalDateConverter().convert(value))
+                        ));
+                return calendar;
+            } catch (IOException e) {
+                throw new IllegalStateException("Directory or file name correct?", e);
             }
         };
     }
@@ -105,4 +102,7 @@ public class ConverterConfiguration implements EnvironmentAware {
         notNull(environment, "Mandatory argument 'environment' is missing");
         this.environment = environment;
     }
+
+    interface LocalDateCalendarConverter extends Converter<String, LocalDateCalendar> {}
+    interface LocalDateConverter extends Converter<String, LocalDate>{}
 }

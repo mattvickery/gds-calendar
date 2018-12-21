@@ -12,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static com.gds.calendar.configuration.ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME;
@@ -33,13 +34,15 @@ public class ExampleCalendarFromCsvFile {
     private LocalDateCalendar calendar;
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() throws IOException {
+        System.setProperty("calendarEndDate", "2017-12-30");
         setProperty(CALENDAR_DATES_LOCATION_PROPERTY_NAME, new ClassPathResource("dates").getURL().getPath());
     }
 
     @AfterClass
-    public static void afterClass() throws Exception {
+    public static void afterClass() {
         clearProperty(CALENDAR_DATES_LOCATION_PROPERTY_NAME);
+        System.clearProperty("calendarEndDate");
     }
 
     @Test

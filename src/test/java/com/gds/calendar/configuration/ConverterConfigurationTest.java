@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -29,8 +30,6 @@ public class ConverterConfigurationTest {
 
     @Value("${datePattern}")
     private String datePattern;
-    @Value("${calendarEndDate}")
-    private String calendarEndDate;
     @Value("${calendarDuration}")
     private int calendarDuration;
 
@@ -43,24 +42,25 @@ public class ConverterConfigurationTest {
     private String calendarDatesFileName = "calendar-dates.csv";
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() throws IOException {
         System.setProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME,
                 new ClassPathResource("dates").getURL().getPath());
         System.setProperty(ConverterConfiguration.CALENDAR_PROPERTIES_PROPERTY_NAME,
                 new ClassPathResource("properties").getURL().getPath());
-
+        System.setProperty("calendarEndDate", "2017-12-30");
     }
 
     @AfterClass
-    public static void afterClass() throws Exception {
+    public static void afterClass() {
         System.clearProperty(ConverterConfiguration.CALENDAR_DATES_LOCATION_PROPERTY_NAME);
         System.clearProperty(ConverterConfiguration.CALENDAR_PROPERTIES_PROPERTY_NAME);
+        System.clearProperty("calendarEndDate");
     }
 
     @Test
     public void stringToDateConverter() {
 
-        final LocalDate convertedDate = stringLocalDateConverter.convert(calendarEndDate);
+        final LocalDate convertedDate = stringLocalDateConverter.convert("2017-12-30");
         assertThat(convertedDate.getDayOfMonth(), is(30));
         assertThat(convertedDate.getMonthValue(), is(12));
         assertThat(convertedDate.getYear(), is(2017));
