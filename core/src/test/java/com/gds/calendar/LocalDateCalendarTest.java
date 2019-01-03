@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gds.calendar.CalendarChangeEvent.CALENDAR_ADDED;
 import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SATURDAY;
@@ -667,7 +666,7 @@ public class LocalDateCalendarTest {
 
     @Test
     public void getDaysInMonth_insideCalendarRange() {
-        // Two January months in the calendar.
+        // Two January months in the com.gds.com.gds.calendar.
         assertThat(calendar.getDaysInMonth(Month.JANUARY).size(), is(62));
     }
 

@@ -26,10 +26,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @since 25/08/2017
  *
  * An example showing an override of property setup. In ordinary use, you can set two Java properties on the
- * command line in order to specify the location and name of the calendar properties file and the name of the
- * directory containing the calendar dates. For example:
+ * command line in order to specify the location and name of the com.gds.com.gds.calendar properties file and the name of the
+ * directory containing the com.gds.com.gds.calendar dates. For example:
  *
- * java -DcalendarDatesLocation=/tmp -D/tmp/calendar.properties
+ * java -DcalendarDatesLocation=/tmp -D/tmp/com.gds.com.gds.calendar.properties
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -20,23 +20,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @since 12/09/2017
  *
  * A simple example of calendar setup and configuration, all you need to do is to set a directory name for the
- * calendar date files and specify a calendar properties file -
+ * calendar date files and specify a calendar properties file.
  */
 public class ManualSpringContainerStartupTest {
 
     @Test
     public void container() throws IOException {
 
-        // Setup the system properties, matching -DcalendarDatesLocation=../holidays -Dcalendar=../calendar.properties
         setProperty(CALENDAR_DATES_LOCATION_PROPERTY_NAME, new ClassPathResource("holidays").getURL().getPath());
         setProperty(CALENDAR_PROPERTIES_PROPERTY_NAME,
                 new ClassPathResource("holidays/calendar.properties").getURL().getPath());
 
-        // 1. Start the container using the supplied calendar configuration class.
+        // 1. Start the container using the supplied com.gds.com.gds.calendar configuration class.
         final AnnotationConfigApplicationContext applicationContext
                 = new AnnotationConfigApplicationContext(CalendarConfiguration.class);
 
-        // 2. Access the calendar object through Spring's get bean method, the calendar is ready to use.
+        // 2. Access the com.gds.com.gds.calendar object through Spring's get bean method, the com.gds.com.gds.calendar is ready to use.
         final LocalDateCalendar calendar = applicationContext.getBean(LocalDateCalendar.class);
 
         assertThat(calendar.getStartDate(), is(LocalDate.of(2018, 12, 19)));

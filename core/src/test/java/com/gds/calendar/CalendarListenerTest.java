@@ -7,7 +7,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gds.calendar.CalendarChangeEvent.*;
+import static com.gds.calendar.CalendarChangeEvent.CALENDAR_ADDED;
+import static com.gds.calendar.CalendarChangeEvent.CALENDAR_REMOVED;
+import static com.gds.calendar.CalendarChangeEvent.DATES_REMOVED;
+import static com.gds.calendar.CalendarChangeEvent.DATE_ADDED;
+import static com.gds.calendar.CalendarChangeEvent.DATE_REMOVED;
+import static com.gds.calendar.CalendarChangeEvent.DAY_OF_WEEK_REMOVED;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
