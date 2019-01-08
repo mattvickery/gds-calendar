@@ -1,5 +1,9 @@
 lexer grammar CqlLexer;
 
+@header {
+    package com.gds.calendar.query;
+}
+
 SPACES
  : [ \u000B\t\r\n] -> channel(HIDDEN)
  ;
@@ -62,6 +66,7 @@ fragment Z : [zZ];
 SELECT: S E L E C T;
 UPDATE: U P D A T E;
 CREATE: C R E A T E;
+DELETE: D E L E T E;
 
 FROM: F R O M;
 WHERE: W H E R E;
@@ -73,6 +78,10 @@ OR: O R;
 ADD: A D D;
 HOLIDAY: H O L I D A Y;
 CALENDAR: C A L E N D A R;
+WEEKDAYS: W E E K D A Y S;
+WEEKENDS: W E E K E N D S;
+DAY: D A Y;
+REMOVE: R E M O V E;
 WITHOUT_WEEKENDS: W I T H O U T UNDER W E E K E N D S;
 WITHOUT_WEEKDAYS: W I T H O U T UNDER W E E K D A Y S;
 WITH_HOLIDAYS: W I T H UNDER H O L I D A Y S;
@@ -84,7 +93,7 @@ YEARS: Y E A R S;
 
 ORDINAL
     :
-    DIGIT*
+    DIGIT+
     ;
 
 SINGLE_LINE_COMMENT
@@ -100,16 +109,16 @@ STRING_LITERAL
     ;
 
 YEAR
-    : DIGIT*
+    : DIGIT+
     ;
     
 MONTH_NUMERIC
-    : DIGIT DIGIT?
+    : DIGIT [1-9]?
     ;
 
 DAY_OF_MONTH
     :
-    DIGIT DIGIT?
+    DIGIT [1-9]?
     ;
 
 DATE
