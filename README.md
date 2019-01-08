@@ -8,14 +8,15 @@ CI: https://travis-ci.org/mattvickery/gds-com.gds.com.gds.calendar
 
 ## Core
 
-All of the calendar and utility classes required to support calendar management.
+All of the calendar and utility classes required to support calendar management. This module also includes a command server
+that receives and fulfils service requests.
 
 ## Client
 
 A client SDK that includes a criteria API and a free-format query facility that can be used against calendars.
 * Queries are parsed for correctness by the client.
 * The SDK is versioned and released independently but maintain backwards compatibility.
-* Calendars can be treated as resources with complete life-cycle operations.
+* Calendars can be treated as resources with complete life-cycle operations, each calendar has a name and an ID.
 
 ## Service
 
@@ -25,6 +26,7 @@ external parties. Calendars can be created and managed by:
 * Direct ReST API access.
 * Server-side properties files.
 * Database backed server instance.
+* CQL Query Submission
 
 ## Query
 
