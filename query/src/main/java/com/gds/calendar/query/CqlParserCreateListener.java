@@ -27,8 +27,8 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitCalendar_identifier(@NotNull CqlParser.Calendar_identifierContext ctx) {
-        propertyChangeSupport.firePropertyChange("calendarIdentifier", null,
-                ctx.STRING_LITERAL().toString().substring(1, ctx.STRING_LITERAL().toString().length() - 1));
+        propertyChangeSupport
+            .firePropertyChange("calendarIdentifier", null, replaceQuotes(ctx.STRING_LITERAL().toString()));
     }
 
     /**
@@ -68,7 +68,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitDate_identifer(@NotNull CqlParser.Date_identiferContext ctx) {
-        System.out.println("Entering exitDate_identifer");
+        propertyChangeSupport.firePropertyChange("date", null, replaceQuotes(ctx.DATE().toString()));
     }
 
     /**
@@ -85,5 +85,9 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
     @Override
     public void exitFilters(CqlParser.FiltersContext ctx) {
         System.out.println("Entering exitFilters");
+    }
+
+    private static String replaceQuotes(final String str) {
+        return str == null ? null : str.replace("'", "");
     }
 }
