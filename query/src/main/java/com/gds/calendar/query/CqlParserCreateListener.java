@@ -44,7 +44,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void enterDuration(@NotNull CqlParser.DurationContext ctx) {
-        System.out.println("Entering enterDuration");
+//        System.out.println("Entering enterDuration");
     }
 
     /**
@@ -52,7 +52,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitDuration(@NotNull CqlParser.DurationContext ctx) {
-        System.out.println("Entering exitDuration");
+//        System.out.println("Entering exitDuration");
     }
 
     /**
@@ -60,7 +60,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void enterDate_identifer(@NotNull CqlParser.Date_identiferContext ctx) {
-        System.out.println("Entering enterDate_identifer");
+//        System.out.println("Entering enterDate_identifer");
     }
 
     /**
@@ -76,7 +76,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void enterFilters(CqlParser.FiltersContext ctx) {
-        System.out.println("Entering enterFilters");
+//        System.out.println("Entering enterFilters");
     }
 
     /**
@@ -84,7 +84,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitFilters(CqlParser.FiltersContext ctx) {
-        System.out.println("Entering exitFilters");
+//        System.out.println("Entering exitFilters");
     }
 
     private static String replaceQuotes(final String str) {

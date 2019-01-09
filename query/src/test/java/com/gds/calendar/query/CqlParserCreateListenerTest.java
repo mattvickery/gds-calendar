@@ -4,27 +4,24 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 
-/**
- *  Grammar needs to be updated to support quoted dates, i.e. '1/12/2000' instead of 1/12/2000.
- */
 public class CqlParserCreateListenerTest {
 
     private final CqlParserCreateListener parserCreateListener = new CqlParserCreateListener();
     private final Map<String, Object> tokenValues = new HashMap<>();
 
     {
-        parserCreateListener.addPropertyChangeListener(e -> {
-//            System.out.println(e.getPropertyName()+"::"+e.getNewValue());
-            tokenValues.put(e.getPropertyName(), e.getNewValue());
-        });
+        parserCreateListener.addPropertyChangeListener(this::propertyChange);
     }
 
     @Before
@@ -57,9 +54,19 @@ public class CqlParserCreateListenerTest {
     private CqlParser createParserFor(final String query) {
 
         final Lexer lexer = new CqlLexer(new ANTLRInputStream(query));
-        final CqlParser parser = new CqlParser(new CommonTokenStream(lexer));
-        parser.addParseListener(parserCreateListener);
+        final List<String> errors =  new ArrayList<>();
+        final AggregatedErrorReportingListener errorReportingListener = new AggregatedErrorReportingListener();
+        lexer.addErrorListener(errorReportingListener.registerErrorConsumer(errors::add));
 
-        return parser;
+        if (errors.isEmpty()) {
+            final CqlParser parser = new CqlParser(new CommonTokenStream(lexer));
+            parser.addParseListener(parserCreateListener);
+            return parser;
+        }
+        throw new IllegalArgumentException("it failed....");
+    }
+
+    private void propertyChange(PropertyChangeEvent e) {
+        tokenValues.put(e.getPropertyName(), e.getNewValue());
     }
 }
