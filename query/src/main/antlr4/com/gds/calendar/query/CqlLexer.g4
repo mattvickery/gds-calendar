@@ -29,6 +29,7 @@ EQ : '==';
 NOT_EQ1 : '!=';
 NOT_EQ2 : '<>';
 UNDER : '_';
+QUOTE : '\'';
 
 fragment DIGIT : [0-9];
 
@@ -100,24 +101,22 @@ MULTILINE_COMMENT
     : '/*' .*? ( '*/' | EOF ) -> channel(HIDDEN)
     ;
 
-STRING_LITERAL
-    : '\'' ( ~'\'' | '\'\'' )* '\''
-    ;
-
 YEAR
     : DIGIT+
     ;
-    
+
 MONTH_NUMERIC
-    : DIGIT [1-9]?
+    : ( [0]? [1-9] | [1] [0-2] )
     ;
 
 DAY_OF_MONTH
-    :
-    DIGIT [1-9]?
+    : ( [0]? [1-9] | [1-2] DIGIT | [3] [0-1] )
     ;
 
 DATE
-    : DAY_OF_MONTH '/' MONTH_NUMERIC '/' YEAR
+    : QUOTE DAY_OF_MONTH '/' MONTH_NUMERIC '/' YEAR QUOTE
     ;
 
+STRING_LITERAL
+    : QUOTE ( ~'\'' | '\'\'' )* QUOTE
+    ;

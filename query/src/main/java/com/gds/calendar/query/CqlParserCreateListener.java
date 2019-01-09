@@ -1,9 +1,11 @@
 package com.gds.calendar.query;
 
 import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Optional;
 
 
 public class CqlParserCreateListener extends CqlParserBaseListener {
@@ -27,8 +29,9 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitCalendar_identifier(@NotNull CqlParser.Calendar_identifierContext ctx) {
-        propertyChangeSupport.firePropertyChange("calendarIdentifier", null,
-                ctx.STRING_LITERAL().toString().substring(1, ctx.STRING_LITERAL().toString().length() - 1));
+        Optional.ofNullable(ctx.STRING_LITERAL())
+            .ifPresent(ci -> propertyChangeSupport
+                .firePropertyChange("calendarIdentifier", null, replaceQuotes(ci.toString())));
     }
 
     /**
@@ -68,7 +71,8 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitDate_identifer(@NotNull CqlParser.Date_identiferContext ctx) {
-        System.out.println("Entering exitDate_identifer");
+        Optional.ofNullable(ctx.DATE())
+            .ifPresent(date -> propertyChangeSupport.firePropertyChange("date", null, replaceQuotes(date.toString())));
     }
 
     /**
@@ -85,5 +89,9 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
     @Override
     public void exitFilters(CqlParser.FiltersContext ctx) {
         System.out.println("Entering exitFilters");
+    }
+
+    private static String replaceQuotes(final String str) {
+        return str == null ? null : str.replace("'", "");
     }
 }
