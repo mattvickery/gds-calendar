@@ -2,7 +2,7 @@
 
 Wiki: https://github.com/mattvickery/gds-com.gds.com.gds.calendar/wiki
 
-CI: https://travis-ci.org/mattvickery/gds-com.gds.com.gds.calendar
+CI: https://travis-ci.org/mattvickery/gds-calendar
 
 # Modules
 
