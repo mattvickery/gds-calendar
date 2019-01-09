@@ -1,11 +1,9 @@
 package com.gds.calendar.query;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.util.StringUtils;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Optional;
 
 
 public class CqlParserCreateListener extends CqlParserBaseListener {
@@ -29,9 +27,8 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitCalendar_identifier(@NotNull CqlParser.Calendar_identifierContext ctx) {
-        Optional.ofNullable(ctx.STRING_LITERAL())
-            .ifPresent(ci -> propertyChangeSupport
-                .firePropertyChange("calendarIdentifier", null, replaceQuotes(ci.toString())));
+        propertyChangeSupport
+            .firePropertyChange("calendarIdentifier", null, replaceQuotes(ctx.STRING_LITERAL().toString()));
     }
 
     /**
@@ -71,8 +68,7 @@ public class CqlParserCreateListener extends CqlParserBaseListener {
      */
     @Override
     public void exitDate_identifer(@NotNull CqlParser.Date_identiferContext ctx) {
-        Optional.ofNullable(ctx.DATE())
-            .ifPresent(date -> propertyChangeSupport.firePropertyChange("date", null, replaceQuotes(date.toString())));
+        propertyChangeSupport.firePropertyChange("date", null, replaceQuotes(ctx.DATE().toString()));
     }
 
     /**
