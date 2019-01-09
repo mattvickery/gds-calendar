@@ -8,8 +8,7 @@ CI: https://travis-ci.org/mattvickery/gds-com.gds.com.gds.calendar
 
 ## Core
 
-All of the calendar and utility classes required to support calendar management. This module also includes a command server
-that receives and fulfils service requests.
+Core calendar classes only, this module can be used in stand-alone applications and should not carry any baggage that is not required by that type of application. 
 
 ## Client
 
@@ -28,6 +27,8 @@ external parties. Calendars can be created and managed by:
 * Database backed server instance.
 * CQL Query Submission
 
+The command server will be located in this module.
+
 ## Query
 
-CQL grammar and supporting code required for query lexical analysis and parsing.
+CQL grammar and supporting code required for query lexical analysis and parsing. Both Lexer and Parser listeners will be included in this module in order that various client code can take advantage of using them.
