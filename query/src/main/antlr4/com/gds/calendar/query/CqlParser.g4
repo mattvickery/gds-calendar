@@ -1,9 +1,5 @@
 parser grammar CqlParser;
 
-@header {
-    package com.gds.calendar.query;
-}
-
 options { tokenVocab=CqlLexer; }
 
 sql_stmt
