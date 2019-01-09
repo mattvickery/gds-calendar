@@ -1,9 +1,5 @@
 lexer grammar CqlLexer;
 
-@header {
-    package com.gds.calendar.query;
-}
-
 SPACES
  : [ \u000B\t\r\n] -> channel(HIDDEN)
  ;
